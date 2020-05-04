@@ -1,0 +1,35 @@
+Steps:
+1) export the existing ENX data (earth coordinates data) to Matlab
+- Velocity: E,N,Mag,Dir
+- AncData: H,P,R
+- Nav: all
+- All bins
+
+2) examine data quality
+- compare speeds to high flow spring
+- Check dir --CLEARLY WRONG AND SWITCHES WITH BOAT DIRECTION
+- Check reasonable E vel
+- check lat/long
+3) Reprocess in VmDas as needed
+
+Mat variables:
+AnH: heading
+AnP: pitch
+AnR: roll
+SerDay: day
+SerDir: water direction
+SerE: east velocity
+SerEnsembles: 1:#ensembles??
+SerHund: ??
+SerMag: water speed
+SerN: north velocity
+
+Fix heading data:
+- THE LOG BOOK IS WRONG
+- adcp heading not recorded for some transects
+- ADCP-AirMar offset for LtoR: +50
+- ADCP-AirMar offset for RtoL: -50
+Adjust VmDAS offsets to fix?
+Keep EA=?
+I exported from WinADCP using VMDAS as reference but the data still is off. Dir seems to be boat direction indicating that "water velocity" includes boat velocity.
+Try processing ENS data in WinADCP with the different references?
