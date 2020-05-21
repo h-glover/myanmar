@@ -3,11 +3,8 @@ cd C:\GLOVER\output\myanmar\
 %%
 clear all,%close all,clc
 load('AyeSept17_CTD_all.mat')
-% define colormap:
-C1=linspace(0.6,0.95,400)';
-C1(:,2)=linspace(0.1,0.95,400)';
-C1(:,3)=linspace(0.1,1,400)';
-C1=flipud(C1);
+
+C1=cmocean('turbid');C1=C1(1:200,:);
 
 for jj=1:length(CombinedProfiles)
     daychk(jj,:)=datevec(CombinedProfiles(jj).time(1));
@@ -85,7 +82,7 @@ figure;
 subplot(311)
 pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
 colorbar,colormap(C1),caxis([0 700])
-plot(dist,zeros(1,length(dist)),'kv'),axis ij
+% plot(dist,zeros(1,length(dist)),'kv'),axis ij
 ylim([0 21])
 xlim([50 550])
 
@@ -149,11 +146,11 @@ ssc_vec(ssc_vec<0)=NaN;
 levels=0:2:10;
 
 subplot(312)
-% pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
-% colorbar,colormap(C1),caxis([0 700])
-contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k')
-axis ij,hold on
-plot(dist,zeros(1,length(dist)),'kv')
+pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
+colorbar,caxis([0 700])
+% contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k')
+% axis ij,hold on
+% plot(dist,zeros(1,length(dist)),'kv')
 ylim([0 21])
 xlim([50 550])
 %% Pathein
@@ -209,8 +206,8 @@ ssc_vec(ssc_vec<0)=NaN;
 levels=0:2:15;
 
 subplot(313)
-% pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
-% colorbar,colormap(C1),caxis([0 700])
-plot(dist,zeros(1,length(dist)),'kv'),axis ij
+pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
+colorbar,caxis([0 700])
+% plot(dist,zeros(1,length(dist)),'kv'),axis ij
 ylim([0 21])
 xlim([0 370])

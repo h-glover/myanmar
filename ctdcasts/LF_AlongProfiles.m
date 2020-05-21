@@ -1,9 +1,7 @@
 clear all%,close all,clc
 % define colormap:
-C1=linspace(0.6,0.95,400)';
-C1(:,2)=linspace(0.1,0.95,400)';
-C1(:,3)=linspace(0.1,1,400)';
-C1=flipud(C1);
+C1=cmocean('turbid');C1=C1(1:200,:);
+
 
 load('AyeMar18_CTD_all.mat')
 for jj=1:length(CombinedProfiles)
@@ -85,12 +83,12 @@ ssc_vec(ssc_vec<0)=NaN;
 levels=0:2:15;
 figure;
 subplot(311)
-% pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
-% colorbar,colormap(C1),caxis([0 4000])
-contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k'),hold on,axis ij
-plot(dist,zeros(1,length(dist)),'kv')
+pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
+colorbar,colormap(C1),caxis([0 4000])
+% contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k'),hold on,axis ij
+% plot(dist,zeros(1,length(dist)),'kv')
 ylim([0 21]),axis ij
-xlim([50 570])
+xlim([50 550])
 %% Bogale
 clearvars -except CombinedProfiles daychk C1
 dd = CombinedProfiles(daychk==7);%4 and/or 7?
@@ -152,12 +150,12 @@ ssc_vec(ssc_vec<0)=NaN;
 levels=0:2:25;
 
 subplot(312)
-% pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
-% colorbar,colormap(C1),caxis([0 1000])
-contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k'),hold on
-plot(dist,zeros(1,length(dist)),'kv')
+pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
+colorbar,caxis([0 1000])
+% contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k'),hold on
+% plot(dist,zeros(1,length(dist)),'kv')
 ylim([0 21]),axis ij
-xlim([50 570])
+xlim([50 550])
 %% Pathein
 clearvars -except CombinedProfiles daychk C1
 dd = CombinedProfiles(daychk==14 | daychk==15);
@@ -218,9 +216,9 @@ ssc_vec(ssc_vec<0 | ssc_vec>870)=NaN;
 levels=0:2:15;
 
 subplot(313)
-% pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
-% colorbar,colormap(C1),caxis([0 1000])
-contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k'),hold on
-plot(dist,zeros(1,length(dist)),'kv')
+pcolor(1:L,depthvec,ssc_vec),shading interp,axis ij,hold on
+colorbar,caxis([0 1000])
+% contour(1:L,depthvec,sal_vec,levels,'showtext','on','Color','k'),hold on
+% plot(dist,zeros(1,length(dist)),'kv')
 ylim([0 21]),axis ij
-
+xlim([0 370])

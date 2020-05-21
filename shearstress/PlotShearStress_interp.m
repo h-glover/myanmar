@@ -4,11 +4,9 @@
 % plot2=shear stress and mean velocity
 % plot3 SSC at the thalweg
 clear all,close all,clc
+cd C:\GLOVER\output\myanmar\
+C1=cmocean('turbid');C1=C1(1:200,:);
 
-C1=linspace(0.6,0.95,100)';
-C1(:,2)=linspace(0.1,0.95,100)';
-C1(:,3)=linspace(0.1,0.95,100)';
-C1=flipud(C1);
 %%
 
 load('BR_Sept17_Neap_FluxDecomp3.mat')
