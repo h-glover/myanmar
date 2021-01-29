@@ -1,4 +1,5 @@
 
+%%
 % Files you'll need:
 % - RBR CTD data exported from Ruskin via the "Legacy" export (Export Dataset>Legacy>Matlab MAT)
 % - MAT file containing the fllowing structures:
@@ -13,11 +14,21 @@
 % Make sure the .mat file exported by Ruskin is in your path, and enter the
 % file name below:
 clear all,close all,clc
-load('018042_20171218_0410.mat')
+load('018042_20201011_1611.mat')
 
 for jj=1:2
     RBR.channelnames{jj+3}=sprintf('Voltage %d',jj);
 end
+
+fid = fopen('GPS_CTD.csv');
+T=textscan(fid,'%s %s %s %s %f %f','Delimiter',',');
+fclose(fid);
+
+GPSStruct.Lat=T{5}(9:11);
+GPSStruct.Long=T{6}(9:11);
+GPSStruct.Wp=T{4}(9:11);
+GPSStruct.Name=T{3}(9:11);
+
 
 %%
 
@@ -83,8 +94,7 @@ save('pickpt','pickpt')
 
 
 %% Build the data structure
-load('GPSStruct_Dec2017.mat')
-load('pickpt.mat') %load the points if you previously picked them
+load('pickpt2.mat') %load the points if you previously picked them
 varnames=RBR.channelnames';
 varnames=strrep(varnames,' ','');
 RBR.datenum=datenum(RBR.sampletimes,'dd/mm/yyyy HH:MM:SS.FFF');
@@ -105,8 +115,8 @@ for jj=1:length(pickpt)
     profiles(jj).datetime=RBR.datetime(pickpt(1,jj):pickpt(2,jj)); % add a datetime field
     profiles(jj).lat=GPSStruct.Lat(jj);
     profiles(jj).long=GPSStruct.Long(jj);
-    profiles(jj).WP=GPSStruct.Wp(jj);
-    profiles(jj).SSC=profiles(jj).Voltage1*1212;
+    profiles(jj).wp=GPSStruct.Wp(jj);
+    profiles(jj).name=GPSStruct.Name(jj);
 end
 
 [~,filename,~] = fileparts(RBR.datasetfilename);
