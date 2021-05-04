@@ -18,7 +18,6 @@ end
 [~,idx]=sort(idx,'ascend');
 ctd=CombinedProfiles(idx);
 
-ctd=CombinedProfiles; clear CombinedProfiles idx
 for jj=1:length(ctd)
     ctd(jj).profileidx=jj; %label 1:length(ctd) for later use
     ctd(jj).timeidx=ctd(jj).time(1);%time cast starts, for matching adcp transect

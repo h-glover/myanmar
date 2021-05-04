@@ -57,12 +57,12 @@ aqd.ssc1=movmean(aqd.ssc1,3);
 
 %%
 
-% rotate the velocity components to ENU on head/roll/tilt
-for jj=1:length(aqd.time)
-    [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
-        aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
-        aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
-end
+% % rotate the velocity components to ENU on head/roll/tilt
+% for jj=1:length(aqd.time)
+%     [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
+%         aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
+%         aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
+% end
 
 % find out of water values:
 aqd.air=repmat(aqd.z,length(aqd.time),1)>repmat(aqd.depth,1,aqd.header.numCells);

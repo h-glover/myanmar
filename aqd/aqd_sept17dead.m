@@ -63,12 +63,12 @@ aqd.ssc2(abs(aqd.ssc2(1:end-1)-aqd.ssc2(2:end))>20)=NaN;
 aqd.ssc1(4270:end)=NaN;aqd.ssc2(4270:end)=NaN;
 aqd.ssc1=movmean(aqd.ssc1,5);aqd.ssc2=movmean(aqd.ssc2,5);
 
-% rotate the velocity components to ENU on head/roll/tilt
-for jj=1:length(aqd.time)
-    [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
-        aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
-        aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
-end
+% % rotate the velocity components to ENU on head/roll/tilt
+% for jj=1:length(aqd.time)
+%     [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
+%         aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
+%         aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
+% end
 
 % find out of water values:
 aqd.air=repmat(aqd.z,length(aqd.time),1)>repmat(aqd.depth,1,aqd.header.numCells);
@@ -105,24 +105,24 @@ aqd.sal=conduc2sali(aqd.sal/1000,aqd.temp,aqd.depth);
 figure;plot(aqd.sal)
 
 %%
-figure;
-subplot(311),pcolor(aqd.time,aqd.z,aqd.v1'),shading flat,colorbar
-subplot(312),pcolor(aqd.time,aqd.z,aqd.v2'),shading flat,colorbar
-subplot(313),pcolor(aqd.time,aqd.z,aqd.v3'),shading flat,colorbar
-
-figure;
-subplot(211),pcolor(aqd.time,aqd.z,aqd.spd'),shading flat,colorbar
-subplot(212),pcolor(aqd.time,aqd.z,aqd.dir'),shading flat,colorbar
-
-figure;
-plot(aqd.dir(:,2),'k'),hold on
-plot(aqd.dir(:,20),'r')
-yyaxis right
-plot(aqd.depth)
-figure;
-subplot(311),plot(aqd.head),ylabel('head')
-subplot(312),plot(aqd.pitch),ylabel('pitch')
-subplot(313),plot(aqd.roll),ylabel('roll')
+% figure;
+% subplot(311),pcolor(aqd.time,aqd.z,aqd.v1'),shading flat,colorbar
+% subplot(312),pcolor(aqd.time,aqd.z,aqd.v2'),shading flat,colorbar
+% subplot(313),pcolor(aqd.time,aqd.z,aqd.v3'),shading flat,colorbar
+% 
+% figure;
+% subplot(211),pcolor(aqd.time,aqd.z,aqd.spd'),shading flat,colorbar
+% subplot(212),pcolor(aqd.time,aqd.z,aqd.dir'),shading flat,colorbar
+% 
+% figure;
+% plot(aqd.dir(:,2),'k'),hold on
+% plot(aqd.dir(:,20),'r')
+% yyaxis right
+% plot(aqd.depth)
+% figure;
+% subplot(311),plot(aqd.head),ylabel('head')
+% subplot(312),plot(aqd.pitch),ylabel('pitch')
+% subplot(313),plot(aqd.roll),ylabel('roll')
 
 
 % figure;

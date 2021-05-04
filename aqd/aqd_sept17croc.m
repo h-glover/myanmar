@@ -75,11 +75,11 @@ aqd.ssc2(abs(aqd.ssc2(1:end-1)-aqd.ssc2(2:end))>70)=NaN;
 
 
 %% rotate the velocity components to ENU on head/roll/tilt
-for jj=1:length(aqd.time)
-    [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
-        aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
-        aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
-end
+% for jj=1:length(aqd.time)
+%     [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
+%         aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
+%         aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
+% end
 
 % find out of water values:
 aqd.depth(aqd.depth<=0.5)=NaN;
@@ -108,29 +108,29 @@ aqd.dir_mean=nanmean(aqd.dir,2);
 %% add other RBR data??
 
 %%
-figure;
-subplot(311),pcolor(aqd.time,aqd.z,aqd.v1'),shading flat,colorbar
-caxis([-1.5 1.5]),title('Croc, Sept 2017'),ylabel('v1')
-subplot(312),pcolor(aqd.time,aqd.z,aqd.v2'),shading flat,colorbar
-caxis([-1.5 1.5]),ylabel('v2')
-subplot(313),pcolor(aqd.time,aqd.z,aqd.v3'),shading flat,colorbar
-caxis([-1.5 1.5]),ylabel('v3')
-
-figure;
-subplot(211),pcolor(aqd.time,aqd.z,aqd.spd'),shading flat,colorbar
-caxis([0 2.5]),ylabel('spd'),title('Croc, Sept 2017')
-subplot(212),pcolor(aqd.time,aqd.z,aqd.dir'),shading flat,colorbar
-caxis([0 360]),ylabel('dir')
+% figure;
+% subplot(311),pcolor(aqd.time,aqd.z,aqd.v1'),shading flat,colorbar
+% caxis([-1.5 1.5]),title('Croc, Sept 2017'),ylabel('v1')
+% subplot(312),pcolor(aqd.time,aqd.z,aqd.v2'),shading flat,colorbar
+% caxis([-1.5 1.5]),ylabel('v2')
+% subplot(313),pcolor(aqd.time,aqd.z,aqd.v3'),shading flat,colorbar
+% caxis([-1.5 1.5]),ylabel('v3')
 % 
 % figure;
-% plot(aqd.dir(:,2),'k'),hold on
-% plot(aqd.dir(:,20),'r')
-% yyaxis right
-% plot(aqd.depth)
-figure;
-subplot(311),plot(aqd.head),ylabel('head')
-subplot(312),plot(aqd.pitch),ylabel('pitch')
-subplot(313),plot(aqd.roll),ylabel('roll')
+% subplot(211),pcolor(aqd.time,aqd.z,aqd.spd'),shading flat,colorbar
+% caxis([0 2.5]),ylabel('spd'),title('Croc, Sept 2017')
+% subplot(212),pcolor(aqd.time,aqd.z,aqd.dir'),shading flat,colorbar
+% caxis([0 360]),ylabel('dir')
+% % 
+% % figure;
+% % plot(aqd.dir(:,2),'k'),hold on
+% % plot(aqd.dir(:,20),'r')
+% % yyaxis right
+% % plot(aqd.depth)
+% figure;
+% subplot(311),plot(aqd.head),ylabel('head')
+% subplot(312),plot(aqd.pitch),ylabel('pitch')
+% subplot(313),plot(aqd.roll),ylabel('roll')
 
 %% go to output data folder
 

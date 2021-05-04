@@ -149,3 +149,45 @@ BogaleRiver.MeinmahlaSSC(iold)=BogaleRiver.MeinmahlaTurb(iold).*0.726;
 figure;
 plot(BogaleRiver.MeinmahlaSSC)
 save('BogaleRiverInstruments.mat','BogaleRiver')
+
+
+%% calc the water level referenced to mean water level during HF 2019
+clear all,close all,clc
+
+cd C:\GLOVER\output\myanmar\longterminst
+load('BogaleRiverInstruments'),br=BogaleRiver;
+
+msl_hf_m = nanmean(br.MeinmahlaDepth(132900:144100));
+br.MeinmahlaWaterLevel=br.MeinmahlaDepth-msl_hf_m;
+hhw_hf = max(br.MeinmahlaWaterLevel(132900:144100));
+llw_hf = min(br.MeinmahlaWaterLevel(132900:144100));
+
+idx = 133387:143954;
+coefs = ut_solv(br.datenum(idx)',br.FredaDepth(idx),[],16,'auto');
+pred = ut_reconstr(br.datenum(idx),coefs);
+msl_hf_freda = nanmean(pred);
+br.FredaWaterLevel = br.FredaDepth-msl_hf_freda;
+
+
+BogaleRiver=br;
+save('BogaleRiverInstruments','BogaleRiver')
+
+
+%% fix well atm record
+clear all,close all,clc
+
+cd C:\GLOVER\output\myanmar\longterminst
+
+load('BogaleRiverWell'),bw=BogaleWell;
+load('BogaleRiverWeather')
+
+[~,~,ib]=intersect(bw.datenum,Weather.datenum);
+bw.MeinmahlaWellPres = bw.MeinmahlaWellPres - Weather.AtmPres(ib)/10;
+bw.MeinmahlaWellPres(bw.MeinmahlaWellPres<0)=NaN;
+bw.MeinmahlaWellDepth = bw.MeinmahlaWellPres*0.101972;
+% 
+% figure;
+% plot(bw.MeinmahlaWellDepth)
+BogaleWell = bw;
+
+save('BogaleRiverWell.mat','BogaleWell')

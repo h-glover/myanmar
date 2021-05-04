@@ -64,12 +64,12 @@ aqd.ssc2 = aqd.ext2*0.12;
 aqd.ssc1=movmean(aqd.ssc1,3);aqd.ssc2=movmean(aqd.ssc2,3);
 %
 
-% rotate the velocity components to ENU on head/roll/tilt
-for jj=1:length(aqd.time)
-    [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
-        aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
-        aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
-end
+% % rotate the velocity components to ENU on head/roll/tilt
+% for jj=1:length(aqd.time)
+%     [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
+%         aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
+%         aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
+% end
 
 % find out of water values:
 aqd.air=repmat(aqd.z,length(aqd.time),1)>repmat(aqd.depth,1,aqd.header.numCells);
@@ -96,36 +96,39 @@ fid=fopen('Mar18_LgChAqd.csv');
 T=textscan(fid,'%*f %s %f %*f','Delimiter',',','HeaderLines',2);
 fclose(fid);
 % convert conductivity to salinity
-hobo_sal=T{2};
+hobo_sal=T{2};% add offset for this conductivity sensor based on air diff w other sal
 hobo_time=datenum(T{1},'mm/dd/yy HH:MM:SS AM');
 
 [~,ih,ia]=intersect(hobo_time,aqd.time);
 aqd.sal=NaN([length(aqd.time),1]);
 aqd.sal(ia)=hobo_sal(ih);aqd.sal=fillmissing(aqd.sal,'nearest');
 aqd.sal=conduc2sali(aqd.sal/1000,aqd.temp,aqd.depth);
-
-%%
-figure;
-subplot(311),pcolor(aqd.time,aqd.z,aqd.v1'),shading flat,colorbar
-yyaxis right,plot(aqd.time,aqd.roll)
-subplot(312),pcolor(aqd.time,aqd.z,aqd.v2'),shading flat,colorbar
-yyaxis right,plot(aqd.time,aqd.roll)
-subplot(313),pcolor(aqd.time,aqd.z,aqd.v3'),shading flat,colorbar
-yyaxis right,plot(aqd.time,aqd.roll)
-
-figure;
-subplot(211),pcolor(aqd.time,aqd.z,aqd.spd'),shading flat,colorbar
-subplot(212),pcolor(aqd.time,aqd.z,aqd.dir'),shading flat,colorbar
-
-figure;
-plot(aqd.dir(:,2),'k'),hold on
-plot(aqd.dir(:,20),'r')
-yyaxis right
-plot(aqd.depth)
-figure;
-subplot(311),plot(aqd.head),ylabel('head')
-subplot(312),plot(aqd.pitch),ylabel('pitch')
-subplot(313),plot(aqd.roll),ylabel('roll')
+% add salinity offset based on comparison with CTD profile
+load('C:\GLOVER\output\myanmar\mmi_discharge\ctdprof_8Mar18.mat')
+offset = nanmean(ctd(11).Salinity(end-5)) - nanmean(aqd.sal(end-5:end));
+aqd.sal = aqd.sal+offset;
+% %%
+% figure;
+% subplot(311),pcolor(aqd.time,aqd.z,aqd.v1'),shading flat,colorbar
+% yyaxis right,plot(aqd.time,aqd.roll)
+% subplot(312),pcolor(aqd.time,aqd.z,aqd.v2'),shading flat,colorbar
+% yyaxis right,plot(aqd.time,aqd.roll)
+% subplot(313),pcolor(aqd.time,aqd.z,aqd.v3'),shading flat,colorbar
+% yyaxis right,plot(aqd.time,aqd.roll)
+% 
+% figure;
+% subplot(211),pcolor(aqd.time,aqd.z,aqd.spd'),shading flat,colorbar
+% subplot(212),pcolor(aqd.time,aqd.z,aqd.dir'),shading flat,colorbar
+% 
+% figure;
+% plot(aqd.dir(:,2),'k'),hold on
+% plot(aqd.dir(:,20),'r')
+% yyaxis right
+% plot(aqd.depth)
+% figure;
+% subplot(311),plot(aqd.head),ylabel('head')
+% subplot(312),plot(aqd.pitch),ylabel('pitch')
+% subplot(313),plot(aqd.roll),ylabel('roll')
 
 
 %% go to output data folder

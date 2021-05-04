@@ -1,20 +1,20 @@
 clear all,close all,clc
-
+cd C:\GLOVER\output\myanmar\fluxdecomp
 ff=dir('*_FluxDecomp2.mat');
 for jj=1:length(ff)
     load(ff(jj).name)
     di(1,jj)=round(fluxdecomp.Di0,-1);
-    dierr(1,jj)=fluxdecomp.rmse.Di0;
+%     dierr(1,jj)=fluxdecomp.rmse.Di0;
     F_comp(jj)=fluxdecomp.Fs0;
     Fe_comp(jj)=fluxdecomp.Fe;
     Fr_comp(jj)=fluxdecomp.Fr;
     Ft_comp(jj)=fluxdecomp.Ft;
-    Ferr_comp(jj)=fluxdecomp.rmse.Fs;
+%     Ferr_comp(jj)=fluxdecomp.rmse.Fs;
     Fdiff_comp(jj)=F_comp(jj)-(Fe_comp(jj)+Fr_comp(jj));
 end
 lbl_BR={'LF, Neap','LF, Spr','HF, Neap','HF, Spr'};
 lbl_YR={'LF, Neap','HF, Neap'};
-M=[F_comp;Fr_comp;Fe_comp;Ft_comp;Ferr_comp];
+M=[F_comp;Fr_comp;Fe_comp;Ft_comp];
 
 figure;
 subplot(211)
@@ -34,7 +34,7 @@ ylim([-2.5 3.5])
 
 %%
 clear all,close all,clc
-
+cd C:\GLOVER\output\myanmar\fluxdecomp
 ff=dir('*_SaltFluxDecomp3.mat');
 for jj=1:length(ff)
     load(ff(jj).name)
@@ -67,6 +67,7 @@ title('Yangon River')
 %%
 
 clear all,close all,clc
+cd C:\GLOVER\output\myanmar\fluxdecomp
 
 ff=dir('*_FluxDecomp3.mat');
 for jj=1:length(ff)
@@ -96,6 +97,7 @@ title('Yangon River')
 ylim([-2.5 3.5])
 %%
 clear all
+cd C:\GLOVER\output\myanmar\fluxdecomp
 ff=dir('*SaltFluxDecomp2.mat');
 for jj=1:length(ff)
     load(ff(jj).name)

@@ -50,20 +50,20 @@ aqd.slope = movmean(aqd.slope,11);
 aqd.ext1=(aqd.ext1/65536)*5*1000;
 aqd.ext2=(aqd.ext2/65536)*5*1000;
 % then convert mV to SSC;AGD6106
-aqd.ssc1 = aqd.ext1*0.11;
-aqd.ssc2 = aqd.ext2*0.066;
+aqd.ssc1 = aqd.ext1*0.9;
+aqd.ssc2 = aqd.ext2*0.9;
 aqd.ssc1(aqd.ssc1<2)=NaN;aqd.ssc2(aqd.ssc2<2)=NaN;
 aqd.ssc1(3500:end)=NaN;
 aqd.ssc1=movmean(aqd.ssc1,3);aqd.ssc2=movmean(aqd.ssc2,3);
 
 figure;plot(aqd.ssc1,'k'),hold on,plot(aqd.ssc2,'r')
 %%
-% rotate the velocity components to ENU on head/roll/tilt
-for jj=1:length(aqd.time)
-    [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
-        aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
-        aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
-end
+% % rotate the velocity components to ENU on head/roll/tilt
+% for jj=1:length(aqd.time)
+%     [aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:)]=xyz2enu(...
+%         aqd.v1(jj,:),aqd.v2(jj,:),aqd.v3(jj,:),...
+%         aqd.head(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat,0,0);
+% end
 
 % find out of water values:
 aqd.air=repmat(aqd.z,length(aqd.time),1)>repmat(aqd.depth,1,aqd.header.numCells);

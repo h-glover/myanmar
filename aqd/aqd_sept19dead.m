@@ -22,15 +22,17 @@ aqd.ext2([1,512],:)=NaN;
 aqd.ext1=(aqd.ext1/65536)*5*1000;
 aqd.ext2=(aqd.ext2/65536)*5*1000;
 % then convert mV to SSC;
-aqd.ssc1 = aqd.ext1*0.06;
+aqd.ssc1 = aqd.ext1*0.07;
 aqd.ssc1 = nanmean(aqd.ssc1)';
 %d = abs((aqd.ssc1(3:end)-aqd.ssc1(1:end-2))/2);d=[0;d;0];
-aqd.ssc1(aqd.ssc1<25 | aqd.ssc1>270)=NaN;
-aqd.ssc2 = aqd.ext2*0.06;
+aqd.ssc1(aqd.ssc1<25 | aqd.ssc1>800)=NaN;
+aqd.ssc2 = aqd.ext2*0.25;
 % d = abs((aqd.ssc2(3:end)-aqd.ssc2(1:end-2))/2);d=[0;d;0];
-aqd.ssc2(aqd.ssc2<25 | aqd.ssc2>270)=NaN;
+aqd.ssc2(aqd.ssc2<25 | aqd.ssc2>800)=NaN;
 aqd.ssc2 = nanmean(aqd.ssc2)';
 
+figure;plot(aqd.ssc1,'k'),hold on,plot(aqd.ssc2,'r')
+%%
 % average all values that aren't velocity
 for jj=7:19
     aqd.(F{jj}) = nanmean(aqd.(F{jj}));
@@ -103,13 +105,13 @@ aqd.header.transmat = [1.5774 -0.7891 -0.7891;...
 % enu conversion for within burst velocity
 % use burst avg head, pitch, roll and compute for each burst
 [L,aqd.header.spb,aqd.header.bins] =size(aqd.v1b); 
-for kk=1:aqd.header.bins
-for jj=1:L
-    [aqd.v1b(jj,:,kk),aqd.v2b(jj,:,kk),aqd.v3b(jj,:,kk)]=xyz2enu(...
-        aqd.v1b(jj,:,kk),aqd.v2b(jj,:,kk),aqd.v3b(jj,:,kk),...
-        aqd.heading(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat/4096,0,0);
-end
-end
+% for kk=1:aqd.header.bins
+% for jj=1:L
+%     [aqd.v1b(jj,:,kk),aqd.v2b(jj,:,kk),aqd.v3b(jj,:,kk)]=xyz2enu(...
+%         aqd.v1b(jj,:,kk),aqd.v2b(jj,:,kk),aqd.v3b(jj,:,kk),...
+%         aqd.heading(jj),aqd.pitch(jj),aqd.roll(jj),aqd.header.transmat/4096,0,0);
+% end
+% end
 
 % % despike the burst velocity data
 % % [VelX{i}(:,j),ip] = func_despike_phasespace3d(VelX{i}(:,j),0,2);
