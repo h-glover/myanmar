@@ -38,16 +38,16 @@ yyaxis right,plot(hc.sf),hold on
 subplot(212)
 yyaxis left,plot(lc.depth)
 yyaxis right,plot(lc.sf)
-% 
-% s1 = 2200;
-% e1=round((1*12.4*60*60/dt) + s1);
-% test = nancumsum(hc.sf(s1:e1)*dt);
-% figure;
-% subplot(411),plot(hc.depth(s1:e1))
-% subplot(412),plot(hc_vel(s1:e1))
-% subplot(413),plot(hc.ssc1(s1:e1))
-% subplot(414),plot(test)
-% 
+
+s1 = 2140;
+e1=round((1*12.4*60*60/dt) + s1);
+test = nancumsum(hc.sf(s1:e1)*dt);
+figure;
+subplot(411),plot(hc.depth(s1:e1))
+subplot(412),plot(hc_vel(s1:e1))
+subplot(413),plot(hc.ssc1(s1:e1))
+subplot(414),plot(test)
+
 % figure;
 % subplot(411),plot(lc.depth)
 % subplot(412),plot(lc_vel)
