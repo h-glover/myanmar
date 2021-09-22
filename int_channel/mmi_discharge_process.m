@@ -61,94 +61,74 @@ end
 [t,idx]=sort(t,'ascend');
 adcp=adcp(idx);
 
+% Fill ADCP data for top and bottom of water column
+for i=1:length(adcp)
+    bottom2add=[];
+    cols=[];
+    columns=[];
+    measuredBins=[];
+    n=[];
+    rows=[];
+    temprow=[];
+   
+    % find the avg bed depth
+    adcp(i).depth=nanmean(adcp(i).depth);
+    adcp(i).depth(adcp(i).depth<0)=NaN;
+    adcp(i).depth=fillmissing(adcp(i).depth,'nearest'); 
+    
+    % determine size of interpreted latrix
+    [rows,cols]=size(adcp(i).spd);
+    
+    % define a new z matrix to allow for upper water column
+    adcp(i).zComplete=nan(rows+2,cols);
+    adcp(i).zComplete(3:rows+2,:)=repmat(adcp(i).z(:,1),1,length(adcp(i).zComplete),1);
+    adcp(i).zComplete(1,:)=adcp(i).z(1)-1;
+    adcp(i).zComplete(2,:)=adcp(i).z(1)-0.5;
+    
+    % fill in the upper water column with the mean velocity from the upper
+    % two measured bins
+    adcp(i).spdComplete=nan(rows+2,cols);
+    adcp(i).spdComplete(3:rows+2,:)=adcp(i).spd;
+%     adcp(i).spdComplete(1,:)=nanmean(adcp(i).spdComplete(3:4,:));
+    adcp(i).spdComplete(2,:)=nanmean(adcp(i).spdComplete(3:4,:));
+    
+     % fill the bottom bins           
+     [~,temprow]=max(~isnan(flipud(adcp(i).spdComplete)), [], 1); %find first bin with nan data as the max of measured values
+     temprow(temprow==1)=NaN; %if this is the first bin then ignore that column (empty)
+     measuredBins=rows+2-temprow+1; %for the along complete, the row index for this value will be the number of rows+2 for surface minus the 
+     bottom2add=(round(adcp(i).depth)-measuredBins./2)./(adcp(i).binsize./100);
+     [~,columns]=find(measuredBins>1);
+
+     % New method (HEG, 8/30/18), fill with 1/2 and 1/4 avg for every 2 bins
+    for n=columns
+        % fill first 2 missing bins with avg of deepest 2 measured
+        fillavg=nanmean(adcp(i).spdComplete(measuredBins(n)-2:measuredBins(n),n));
+        adcp(i).spdComplete(measuredBins(n)+1:measuredBins(n)+2,n)=fillavg;
+        if bottom2add(n)<=4 %last 2 of 4 missing bins is half of the above avg
+            adcp(i).spdComplete(measuredBins(n)+3:measuredBins(n)+bottom2add(n),n)=fillavg/2;
+        else %if more than 3 bins, first 2 are avg of above 2 and rest are half of that avg
+            adcp(i).spdComplete(measuredBins(n)+3:measuredBins(n)+4,n)=fillavg/2;
+            adcp(i).spdComplete(measuredBins(n)+5:measuredBins(n)+bottom2add(n),n)=fillavg/4;     
+        end
+    end
+%     % add bottom and top row to smooth then remove those same rows
+%     spd = adcp(i).spdComplete;
+%     for n=columns
+%         spd(measuredBins(n)+bottom2add(n)+1,n) =...
+%             spd(measuredBins(n)+bottom2add(n),n);
+%     end
+%     spd = [spd(1,:);spd];
+%     K = (1/25)*ones(5);
+%     spd = conv2(spd,K,'same');
+%     
+%     adcp(i).spdComplete = spd(2:end,:);
+    
+%     figure;pcolor(adcp(i).time,adcp(i).zComplete,adcp(i).spdComplete),shading flat,axis ij,colorbar
+
+end
+
 save('br_int_march2018','adcp')
 
-%% 
-clear all%,close all,clc
-
-cd C:\GLOVER\output\myanmar
-load('mmi_discharge\br_int_march2018.mat')
-load('longterminst\BogaleRiverInstruments.mat')
-br=BogaleRiver;
-
-for jj=1:3
-adcp(jj).east_mean = nanmean(adcp(jj).east);
-adcp(jj).north_mean = nanmean(adcp(jj).north);
-
-adcp(jj).heading(adcp(jj).heading<0)=NaN;
-adcp(jj).dir(adcp(jj).dir<0)=NaN;
-adcp(jj).spd(adcp(jj).spd>200)=NaN;
-
-adcp(jj).spd_mean = nanmean(adcp(jj).spd);
-adcp(jj).spd_mean = movmean(adcp(jj).spd_mean,7);
-adcp(jj).dir_mean = nanmean(adcp(jj).dir);
-adcp(jj).dir_mean = movmean(adcp(jj).dir_mean,7);
-
-
-figure(1);
-subplot(211)
-yyaxis left
-plot(adcp(jj).time,adcp(jj).spd_mean,'k-'),hold on
-yyaxis right
-plot(br.datenum,br.ut_FredaDepth,'b-')
-xlim([adcp(1).time(1) adcp(3).time(end)])
-datetick('x','HH:MM','keeplimits')
-% title(datestr(floor(adcp(jj).time(1))))
-hold on
-subplot(212)
-yyaxis left
-plot(adcp(jj).time,adcp(jj).dir_mean,'k-'),hold on
-plot(adcp(jj).time,adcp(jj).heading,'r-'),hold on
-yyaxis right
-plot(br.datenum,br.ut_FredaDepth,'b-')
-xlim([adcp(1).time(1) adcp(3).time(end)])
-datetick('x','HH:MM','keeplimits')
-hold on
-
-% figure(2);
-% scatter(adcp(jj).dir_mean,adcp(jj).heading,[],adcp(jj).time),hold on
-% colorbar,refline(1,0),refline(-1,350)
-
-adcp(jj).flowdiff = abs(adcp(jj).dir_mean - adcp(jj).heading);
-figure(2);
-scatter(adcp(jj).lon,adcp(jj).lat,[],adcp(jj).flowdiff,'.')
-colorbar,caxis([0 180]),hold on,title('water spd')
-colormap(cmocean('phase')),title('water dir - head')
-
-figure;%(2)
-scatter(adcp(jj).lon,adcp(jj).lat,[],adcp(jj).spd_mean)
-colorbar,caxis([0 50]),hold on,title('water spd')
-figure;%(3)
-subplot(121),scatter(adcp(jj).lon,adcp(jj).lat,[],adcp(jj).dir_mean)
-colorbar,caxis([0 360]),hold on,title('water dir')
-subplot(122),scatter(adcp(jj).lon,adcp(jj).lat,[],adcp(jj).heading)
-colorbar,caxis([0 360]), hold on
-colormap(cmocean('phase')),title('head')
-end
-
-
-%%
-clear all,close all,clc
-
-cd C:\GLOVER\output\myanmar\mmi_discharge
-load('br_int_march2018')
-
-for jj=1:3
-adcp(jj).dir(adcp(jj).dir<0)=NaN;
-adcp(jj).spd(adcp(jj).spd>200)=NaN;
-
-figure(10);
-quiver(adcp(jj).lon,adcp(jj).lat,adcp(jj).east(2,:),adcp(jj).north(2,:))
-hold on,
-
-figure(20);
-scatter(adcp(jj).lon,adcp(jj).lat,[],adcp(jj).spd(2,:))
-hold on,colorbar,caxis([0 50]),title('water speed')
-
-figure(30);
-scatter(adcp(jj).lon,adcp(jj).lat,[],adcp(jj).depth(1,:)),colorbar
-hold on,colorbar,title('depth')
-end
 
 %% add in CTD profiles of turbidity and salinity:
 
@@ -196,5 +176,23 @@ for jj=1:length(ctd)
     [x,y,~] = deg2utm(ctd(jj).lat, ctd(jj).long);
     dst = sqrt(abs(ch.x-x).^2 + abs(ch.y-y).^2);
     [~,idx]=min(dst);
-    ctd(jj).dist=ch.dist_in(idx);
+    ctd(jj).dist_in=ch.dist_in(idx);
+    ctd(jj).dist=ch.dist(idx);
 end
+save('C:\GLOVER\output\myanmar\mmi_discharge\ctdprof_13Sep17.mat','ctd')
+%% add dist along chnl to ctd profile struct
+clear all,close all,clc
+cd C:\GLOVER\output\myanmar
+load('mmi_discharge\ctdprof_8Mar18.mat')
+load('mmi_discharge\channel_trace.mat')
+
+%figure out where ctd profs are along channel
+
+for jj=1:length(ctd)
+    [x,y,~] = deg2utm(ctd(jj).lat, ctd(jj).long);
+    dst = sqrt(abs(ch.x-x).^2 + abs(ch.y-y).^2);
+    [~,idx]=min(dst);
+    ctd(jj).dist_in=ch.dist_in(idx);
+    ctd(jj).dist=ch.dist(idx);
+end
+save('C:\GLOVER\output\myanmar\mmi_discharge\ctdprof_8Mar18.mat','ctd')

@@ -30,6 +30,7 @@ surv.width(surv.width==50)=0;
 [num_width,ch_width] = groupcounts(surv.width);
 
 tot_ch_width = sum(ch_width.*(61*num_width/(max(surv.dist)/1000)));
+totch = (sum(num_width)/(max(surv.dist)/1000))*61;
 
 % % divide into channel size categorie
 % surv.width(:,2:4)=0; %col1 = small, col2 = med, col3 = large
@@ -100,7 +101,7 @@ tot_ch_width = sum(ch_width.*(61*num_width/(max(surv.dist)/1000)));
 % 
 % 
 % save('mmi_discharge\BR_GrainSize_Channel.mat','hf','lf')
-%%
+%% HC CHANNEL MORPHOLOGY FIGURE FOR PAPER
 % small: 0-5 m
 % medium: 5-10 m
 % large: 10-15 m
@@ -132,6 +133,9 @@ km = (500:1000:km(end))/1000;
 % scatter(surv.long,surv.lat,surv.width(:,1)*10,surv.width(:,1),'filled')
 % colorbar,colormap(cmocean('turbid')),caxis([0 10])
 
+% smooth depth:
+adcp.depth = movmean(adcp.depth,9);
+
 figure;
 subplot(311)
 yyaxis left,scatter(surv.dist/1000,surv.width(:,1),[],surv.width(:,1),'filled')
@@ -150,34 +154,36 @@ ylabel('channels/km')
 yyaxis right,plot(adcp.elapdist/1000,adcp.depth,'k')
 ax=gca;ax.YColor = 'k';axis ij,ylabel('channel depth')
 xlim([0 14]),xlabel('km from south entrance')
-legend({'small','med','large','depth'})
+legend({'<5 m','5-10 m','>10','depth'})
+% small: 0-5 m
+% medium: 5-10 m
+% large: 10-15 m
 
-
-% figure;
-% for jj=1:length(hf)
-%     semilogx(hf(jj).data(:,1),hf(jj).data(:,2),'k'),hold on
-% end
-% for jj=1:length(lf)
-%     semilogx(lf(jj).data(:,1),lf(jj).data(:,2),'b')
-% end
 dist_hf = vertcat(hf.dist)/1000;
-frac_hf = vertcat(hf.median);
 dist_lf = vertcat(lf.dist)/1000;
-frac_lf = vertcat(lf.median);
+med_hf = vertcat(hf.median);
+med_lf = vertcat(lf.median);
+frac_hf = vertcat(hf.frac);
+frac_lf = vertcat(lf.frac);
+
 subplot(313)
-plot(dist_hf,frac_hf,'k'),hold on
-plot(dist_lf,frac_lf,'r')
-% plot(dist_hf,frac_hf(:,1),'k'),hold on
-% plot(dist_hf,frac_hf(:,2),'r')
-% plot(dist_hf,frac_hf(:,3),'b')
-% plot(dist_lf,frac_lf(:,1),'k--')
-% plot(dist_lf,frac_lf(:,2),'r--')
-% plot(dist_lf,frac_lf(:,3),'b--')
-% ylim([0 100]),ylabel('% content')
-% legend({'hf clay','hf silt','hf sand','lf clay','lf silt','lf sand'})
-ylim([0 200]),ylabel('D_{50} in um')
+yyaxis left
+semilogy(dist_hf,med_hf,'k-'),hold on
+semilogy(dist_lf,med_lf,'r-')
+ylim([1 200]),ylabel('D_{50} in um')
+yyaxis right
+plot(dist_hf,frac_hf(:,3),'k:'),hold on
+plot(dist_lf,frac_lf(:,3),'r:')
+ylim([0 100]),ylabel('% content')
 xlim([0 14]),xlabel('km from south entrance')
 legend({'high flow','low flow'})
+
+
+
+
+
+
+
 
 
 

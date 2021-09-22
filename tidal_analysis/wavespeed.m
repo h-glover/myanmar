@@ -1,4 +1,17 @@
 
+% channel water depth is 5-7m (deep spots are 11m)
+clear all,close all,clc
+c_min = sqrt(9.8*5);
+c_max = sqrt(9.8*11); % 7-10 m/s :)
+
+% assume c = 6 m/s and calc where the tidal waves would meet in island
+% interior: convergence is at 10.4km to 11.8km, end is at 14500m
+
+t1 = (10.4*1000/c_min)/(60); % t in mins to south pt of convergence
+t2 = ((14.5-11.8)*1000/c_min)/(60); % t in mins to north pt of convergence
+% this is approximately where the tidal waves would converge based on the
+% tidal wave propagation (calc from depth) and the 20 min delay between the
+% arrival at the south mouth and the north mouth!
 
 %% wave speed in main stem from cyclone to freda
 clear all,close all,clc
@@ -58,6 +71,8 @@ c_int = int_dist./t_diff; % 14.2 m/s
 % vars_hc = ut_solv(hc.time',hc.depth',[],16,'auto');
 % vars_lc = ut_solv(lc.time',lc.depth',[],16,'auto');
 % c_m2_all = 11500/((342-331)/360*(12.42*60*60));
+
+
 
 
 %% wave speed in internal channel - LOW FLOW

@@ -12,33 +12,36 @@ bw.MeinmahlaWellTemp=movmean(bw.MeinmahlaWellTemp,7);
 figure;
 subplot(2,2,1:2)
 plot(br.datenum,br.MeinmahlaWaterLevel,'b'),hold on
-plot(bw.datenum,bw.MeinmahlaWellDepth-0.35,'k--')
-ylim([-2 2]),ylabel('water level')
+plot(bw.datenum,bw.MeinmahlaWellDepth-0.35,'k-')
+ylim([-1.7 2.5]),ylabel('water level')
 yyaxis right
-plot(bw.datenum,bw.MeinmahlaWellTemp,'r')
-ylim([25 29]),ylabel('temp (C)')
-xlim([datenum('3/1/2017') datenum('10/1/2017')])
+plot(br.datenum,br.MeinmahlaPresTemp,'r'),hold on
+plot(bw.datenum,bw.MeinmahlaWellTemp,'y')
+ylim([8 35]),ylabel('temp (C)')
+xlim([datenum('3/1/2017') datenum('9/1/2017')])
 datetick('x','mm yy','keeplimits')
 legend({'River','Well','Well Temp'})
 
 subplot(2,2,3)
 plot(br.datenum,br.MeinmahlaWaterLevel,'b'),hold on
-plot(bw.datenum,bw.MeinmahlaWellDepth-0.35,'k')
-ylim([-2 1.5])
+plot(bw.datenum,bw.MeinmahlaWellDepth-0.35,'k-')
+ylim([-1.7 2.5])
 yyaxis right
-plot(bw.datenum,bw.MeinmahlaWellTemp,'r')
-ylim([25 29])
+plot(br.datenum,br.MeinmahlaPresTemp,'r'),hold on
+plot(bw.datenum,bw.MeinmahlaWellTemp,'y')
+ylim([8 35])
 xlim([bw.datenum(7875) bw.datenum(10700)])
 datetick('x','mm dd','keeplimits')
 title('dry season')
 
 subplot(2,2,4)
 plot(br.datenum,br.MeinmahlaWaterLevel,'b'),hold on
-plot(bw.datenum,bw.MeinmahlaWellDepth-0.35,'k')
-ylim([-2 1.5])
+plot(bw.datenum,bw.MeinmahlaWellDepth-0.35,'k-')
+ylim([-1.7 2.5])
 yyaxis right
-plot(bw.datenum,bw.MeinmahlaWellTemp,'r')
-ylim([25 29])
+plot(br.datenum,br.MeinmahlaPresTemp,'r'),hold on
+plot(bw.datenum,bw.MeinmahlaWellTemp,'y')
+ylim([8 35])
 xlim([bw.datenum(22100) bw.datenum(24925)])
 datetick('x','mm dd','keeplimits')
 title('wet season')

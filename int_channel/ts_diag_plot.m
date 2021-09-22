@@ -16,9 +16,9 @@ lflong=vertcat(lf.long);
 % generating background density contours
 % generating background density contours
 smin = 0;% set min and max values for your plot for sal and temp
-smax = 18;
-thetamin = 28;
-thetamax = 31;
+smax = 18.5;
+thetamin = 26.5;
+thetamax = 30.5;
 xdim=round((smax-smin)./0.1+1);
 ydim=round((thetamax-thetamin)+1);
 dens=zeros(ydim,xdim);
@@ -38,12 +38,12 @@ hold on
 clabel(c,h,'LabelSpacing',1000);
 for jj=1:length(hf)
     hftvec(jj) = 24*60*(hf(jj).time(1)-hf(1).time(1));
-    d_in = hf(jj).dist*ones(size(hf(jj).Salinity));
+    d_in = hf(jj).dist_in*ones(size(hf(jj).Salinity));
     scatter(hf(jj).Salinity,hf(jj).Temperature,[],d_in,'d','filled')
 end
 for jj=1:length(lf)
     lftvec(jj) = 24*(lf(jj).time(1)-lf(1).time(1));
-    d_in = lf(jj).dist*ones(size(lf(jj).Salinity));
+    d_in = lf(jj).dist_in*ones(size(lf(jj).Salinity));
     scatter(lf(jj).Salinity,lf(jj).Temperature,[],d_in,'*')
 end
 colorbar,caxis([0 6000])
@@ -51,8 +51,8 @@ colormap(cmocean('thermal'))
 % ax=gca;ax.Colormap=cmocean('thermal');
 xlabel('Salinity'),ylabel('Temp (^oC)')
 
-hfdist=vertcat(hf.dist);
-lfdist=vertcat(lf.dist);
+hfdist=vertcat(hf.dist_in);
+lfdist=vertcat(lf.dist_in);
 subplot(222)
 plot(ch.lon,ch.lat,'k-'),hold on
 scatter(hflong,hflat,[],hfdist,'d','filled')
@@ -62,11 +62,11 @@ xlabel('Lon'),ylabel('Lat')
 
 subplot(2,2,3)
 for jj=1:length(hf)
-    d_in = hf(jj).dist*ones(size(hf(jj).Salinity));
+    d_in = hf(jj).dist_in*ones(size(hf(jj).Salinity));
     scatter(hf(jj).Density,hf(jj).Depth,[],d_in,'d','filled'),hold on
 end
 for jj=1:length(lf)
-    d_in = lf(jj).dist*ones(size(lf(jj).Salinity));
+    d_in = lf(jj).dist_in*ones(size(lf(jj).Salinity));
     scatter(lf(jj).Density,lf(jj).Depth,[],d_in,'*'),hold on
 end
 caxis([0 6000]),axis ij
@@ -75,11 +75,11 @@ xlabel('depth (m)'),ylabel('Salinity')
 
 subplot(2,2,4)
 for jj=1:length(hf)
-    d_in = hf(jj).dist*ones(size(hf(jj).Salinity));
+    d_in = hf(jj).dist_in*ones(size(hf(jj).Salinity));
     scatter(hf(jj).SSCCal,hf(jj).Depth,[],d_in,'d','filled'),hold on
 end
 for jj=1:length(lf)
-    d_in = lf(jj).dist*ones(size(lf(jj).Salinity));
+    d_in = lf(jj).dist_in*ones(size(lf(jj).Salinity));
     scatter(lf(jj).SSCCal,lf(jj).Depth,[],d_in,'*'),hold on
 end
 caxis([0 6000]),axis ij
@@ -99,28 +99,26 @@ clabel(c,h,'LabelSpacing',1000);
 for jj=1:length(hf)
     sal = nanmean(hf(jj).Salinity);
     temp = nanmean(hf(jj).Temperature);
-    scatter(sal,temp,[50],hf(jj).dist/1000,'d','filled')
-    scatter(sal,temp,[50],hf(jj).dist/1000,'kd')
+    ssc = nanmean(lf(jj).SSCCal);
+    scatter(sal,temp,ssc,hf(jj).dist/1000,'d','filled')
+    scatter(sal,temp,ssc,hf(jj).dist/1000,'kd')
 end
 for jj=1:length(lf)
     sal = nanmean(lf(jj).Salinity);
     temp = nanmean(lf(jj).Temperature);
-    if jj<7
-        scatter(sal,temp,[50],lf(jj).dist/1000,'o','filled')
-        scatter(sal,temp,[50],lf(jj).dist/1000,'ko')
-    elseif jj>=7
-        scatter(sal,temp,[65],lf(jj).dist/1000,'s','filled')
-        scatter(sal,temp,[65],lf(jj).dist/1000,'ks')        
-    end
-    
+    ssc = nanmean(lf(jj).SSCCal);
+        scatter(sal,temp,ssc,lf(jj).dist/1000,'o','filled')
+        scatter(sal,temp,ssc,lf(jj).dist/1000,'ko')
 end
-colorbar,caxis([0 6])
-colormap(cmocean('thermal'))
+colorbar,caxis([0 14])
+C =cmocean('curl');
+C = C(15:end-15,:);
+colormap(C)
 xlabel('Salinity'),ylabel('Temperature (^oC)')
 title('Depth Avg CTD Profiles')
 % 
-% hfdist=vertcat(hf.dist);
-% lfdist=vertcat(lf.dist);
+% hfdist=vertcat(hf.dist_in);
+% lfdist=vertcat(lf.dist_in);
 % subplot(122)
 % plot(ch.lon,ch.lat,'k-'),hold on
 % scatter(hflong,hflat,[],hfdist,'d','filled')

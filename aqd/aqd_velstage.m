@@ -81,33 +81,6 @@ for jj=1:3
 
 end
 
-
-% 
-% figure; 
-% for jj=1:7
-%     load(F(jj).name)
-%     aqd.spd_mean(aqd.spd_mean>0.05) = aqd.spd_mean(aqd.spd_mean>0.05)-0.05;
-%     aqd.spd_mean(aqd.slope<0)=(-1)*aqd.spd_mean(aqd.slope<0);
-%     ssc_mean = nanmean([aqd.ssc1,aqd.ssc2],2);
-%     
-%     subplot(2,3,F(jj).plotloc)
-%     scatter(aqd.spd_mean,ssc_mean)
-%     hold on
-% 
-%     if F(jj).plotloc==1 || F(jj).plotloc==4
-% %         axis([-1 1 0 6.5])
-%         title('High Connectivity, Mang')
-%     elseif F(jj).plotloc==2 || F(jj).plotloc==5
-% %         axis([-0.5 0.5 0 4])
-%         title('Low Connectivity, Mang')
-%     elseif F(jj).plotloc==3 || F(jj).plotloc==6
-% %         axis([-0.5 0.5 0 2.5])
-%         title('Low Connectivity, Agri')
-%     end
-% 
-% end
-% subplot(2,3,1),ylabel('High Flow','FontWeight','Bold')
-% subplot(2,3,4),ylabel('Low Flow','FontWeight','Bold')
 %%
 clear all,close all,clc
 load('aqd_sep19_ag.mat'),hf=aqd;
@@ -163,46 +136,56 @@ scatter(ag.spd_mean,ag.depth_elev,[],ag.ssc1)
 colorbar,caxis([0 200]),colormap(cmocean('amp'))
 
 
-%% CM Spring 2021 figure: compare agri to LC
-clear all,close all,clc
 
-load('aqd_sep17_lc.mat')
-aqd.spd_mean(aqd.spd_mean>0.05) = aqd.spd_mean(aqd.spd_mean>0.05)-0.05;
-aqd.spd_mean(aqd.slope<0)=(-1)*aqd.spd_mean(aqd.slope<0);
-lc = aqd;
-load('aqd_mar18_ag.mat')
-aqd.spd_mean(aqd.spd_mean>0.05) = aqd.spd_mean(aqd.spd_mean>0.05)-0.05;
-aqd.spd_mean(aqd.slope<0)=(-1)*aqd.spd_mean(aqd.slope<0);
-ag=aqd;clear aqd
+
+
+%% figure for Ch2a paper
+
+clear all,close all,clc
+cd C:\GLOVER\output\myanmar\aqd
+
 
 figure; 
-subplot(121)
-scatter(lc.spd_mean,lc.depth,[],lc.ssc1,'.')
-title('Meinmahla Island')
-subplot(122)
-scatter(ag.spd_mean(1:450),ag.depth(1:450),[],ag.ssc1(1:450),'.')
-colorbar,title('Agricultural field')
-
-for jj=1:2
-    subplot(1,2,jj)
-    caxis([0 100]),colormap(cmocean('amp'))
-    axis([-0.5 0.5 0 3.5])
-    ylabel('Water Depth (m)')
-    xlabel('Water Velocity (m/s)')
-end
-
-%%
-clear all,close all,clc
-
 load('aqd_sep17_hc.mat')
-% aqd.spd_mean(aqd.spd_mean>0.5) = aqd.spd_mean(aqd.spd_mean>0.5)-0.5;
+idx = 1:length(aqd.time)-500;
 aqd.spd_mean = aqd.spd_mean-0.2;
 aqd.spd_mean(aqd.slope<0)=(-1)*aqd.spd_mean(aqd.slope<0);
+subplot(222)
+scatter(aqd.spd_mean(idx),aqd.depth(idx),[],aqd.ssc1(idx),'.')
+axis([-1.2 1.2 3 6.5]),title('hf hc')
 
-figure; 
-scatter(aqd.spd_mean,aqd.depth,[],aqd.ssc1,'.')
+load('aqd_mar18_hc.mat')
+idx = [300:450];
+idx = 1:length(aqd.time);
+aqd.spd_mean(aqd.spd_mean>0.05) = aqd.spd_mean(aqd.spd_mean>0.05)-0.05;
+aqd.spd_mean(aqd.slope<0)=(-1)*aqd.spd_mean(aqd.slope<0);
+subplot(221)
+scatter(aqd.spd_mean(idx),aqd.depth(idx),[],aqd.ssc1(idx),'.')
+axis([-1.2 1.2 3 6.5]),title('lf hc')
+
+load('aqd_sep17_lc.mat')
+idx = [1300:2000];
+idx = 1:length(aqd.time);
+aqd.spd_mean(aqd.spd_mean>0.05) = aqd.spd_mean(aqd.spd_mean>0.05)-0.05;
+aqd.spd_mean(aqd.slope<0)=(-1)*aqd.spd_mean(aqd.slope<0);
+subplot(224)
+scatter(aqd.spd_mean(idx),aqd.depth(idx),[],aqd.ssc1(idx),'.')
+axis([-0.5 0.5 0 3.5]),title('hf lc')
+
+load('aqd_mar18_lc.mat')
+idx = [1:250];
+idx = 1:length(aqd.time);
+aqd.spd_mean(aqd.spd_mean>0.05) = aqd.spd_mean(aqd.spd_mean>0.05)-0.08;
+aqd.spd_mean(aqd.slope<0)=(-1)*aqd.spd_mean(aqd.slope<0);
+subplot(223)
+scatter(aqd.spd_mean(idx),aqd.depth(idx),[],aqd.ssc1(idx),'.')
+axis([-0.5 0.5 0 3.5]),title('lf lc')
+
+for jj=1:4
+    subplot(2,2,jj)
 colorbar
-caxis([0 100]),colormap(cmocean('amp'))
-axis([-1.2 1.2 3 6.5])
+caxis([0 150]),colormap(cmocean('amp'))
 ylabel('Water Depth (m)')
 xlabel('Water Velocity (m/s)')
+xlim([-1.2 1.2])
+end

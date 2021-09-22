@@ -39,6 +39,12 @@ for jj=13:18
     aqd.(fields{jj})([1:95,3073:end],:)=[];
 
 end
+
+% fix depth:
+aqd.depth(387:end) = aqd.depth(387:end) + 0.3;
+aqd.depth(1108:end) = aqd.depth(1108:end) + 0.05;
+aqd.depth(386:412) = NaN;
+
 % calculate water slope in m/hr
 deltaT=round((1/24)./(aqd.time(2)-aqd.time(1)));
 aqd.slope=(aqd.depth(2:end)-aqd.depth(1:end-1)).*deltaT;

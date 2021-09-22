@@ -23,9 +23,6 @@ alltime_ctd=datevec(alltime_ctd);alltime_ctd(:,6)=0;alltime_ctd=datenum(alltime_
 % assign a transect number to each time point
 for jj=1:length(adcp)
     adcp(jj).transidx=jj*ones(1,length(adcp(jj).time));
-    adcp(jj).depth=nanmean(adcp(jj).depth);
-    adcp(jj).depth(adcp(jj).depth<0)=NaN;
-    adcp(jj).depth=fillmissing(adcp(jj).depth,'nearest');
 end
 
 % concatenate into 1 vector and remove seconds
@@ -47,6 +44,27 @@ alltime_ctd=alltime_ctd(iC);
 intrp_depth =0:0.05:15; %max adcp depth is 15m
 
 for jj=1:length(ctd)
+% calculate density and density gradient for each depth:
+    if abs(ctd(jj).Salinity(end)-ctd(jj).Salinity(end-4))>1
+        ctd(jj).Salinity(end-4:end)=nanmean(ctd(jj).Salinity(end-6:end-5));
+    end
+    ctd(jj).Density = sw_dens(ctd(jj).Salinity,ctd(jj).Temperature,ctd(jj).Depth);
+
+    % fix Salinity blips at bottom and top of some profiles
+    if jj>14 || jj<5
+        ctd(jj).Density(1:2) = ctd(jj).Density(3);
+        ctd(jj).Salinity(1:2) = ctd(jj).Salinity(3);
+    end
+    ctd(jj).Density = fillmissing(ctd(jj).Density,'nearest');
+    % calc depths and density gradient for in between each point:
+%     ctd(jj).dens_grad = interp1(ctd(jj).Depth,ctd(jj).Density,adcp(3).zComplete(:,1));    
+    ctd(jj).dens_grad = interp1(ctd(jj).Depth,ctd(jj).Density,adcp(3).z(:,1));
+       
+    ctd(jj).N2 = (ctd(jj).dens_grad(1:end-2) - ctd(jj).dens_grad(3:end))./1;
+    ctd(jj).N2 = [ctd(jj).N2(1);ctd(jj).N2;ctd(jj).N2(end)];
+    ctd(jj).N2 = -9.8/1010*ctd(jj).N2;
+%     ctd(jj).N2 = abs(ctd(jj).N2);
+    
     % interp ssc and salinity into the new uniform depth matrix
     ctd(jj).SSCCal = interp1(ctd(jj).Depth,ctd(jj).SSCCal,intrp_depth)';
     ctd(jj).Salinity = interp1(ctd(jj).Depth,ctd(jj).Salinity,intrp_depth)';
@@ -57,9 +75,6 @@ for jj=1:length(ctd)
     ctd(jj).transect=allidx_adcp(jj);
     L(jj)=length(ctd(jj).time);
 end
-% % brute force...
-% ctd1=ctd([1:7]);
-% ctd3=ctd([8:end]);
 
 % first map ctd1 onto adcp transect1
 for kk=[1,3]
@@ -107,7 +122,23 @@ adcp(kk).sal_flux_north = adcp(kk).sal_flux.*adcp(kk).north;
 % figure;pcolor(adcp(kk).sal),shading flat,colorbar
 end
 
+% map ctd (N2 vals) onto adcp transect3 to calc Richardson number
+% adcp(3).N2 = NaN(size(adcp(3).spdComplete));
+adcp(3).N2 = NaN(size(adcp(3).spd));
 
+[~,iC,iA] = intersect(alltime_ctd,adcp(3).time);
+for jj=1:length(iC)
+    adcp(3).N2(:,iA(jj)) = ctd(jj).N2;
+end
+adcp(3).N2 = fillmissing(adcp(3).N2,'nearest',2);
+
+% adcp(3).KE = [adcp(3).spdComplete(1,:);adcp(3).spdComplete;adcp(3).spdComplete(end,:)]./100;
+adcp(3).KE = [adcp(3).spd(1,:);adcp(3).spd;adcp(3).spd(end,:)]./100;
+adcp(3).KE = (adcp(3).KE(1:end-2,:) - adcp(3).KE(3:end,:)).^2;
+adcp(3).KE(1,:) = adcp(3).KE(2,:);
+
+
+adcp(3).Ri = adcp(3).N2./adcp(3).KE;
 
 save('mmi_discharge\br_int_march2018.mat','adcp')
 

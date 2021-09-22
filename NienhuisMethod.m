@@ -1,3 +1,14 @@
+% Bogale
+clear all
+wu = 1000;
+L = 17/0.00004;
+a = 2.75;
+k = 1.1e-4;
+b = wu/17;
+
+wm = wu + (b*k*a*L)
+
+%%
 clear all,close all,clc
 
 fid=fopen('RawData_short.csv');

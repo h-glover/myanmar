@@ -43,7 +43,7 @@ res_sum_lc = (fld_sum_lc - ebb_sum_lc)/tide_sec; % kg/s/m
 D = 0.7*1000; %kg/s, % Bogale in Sept, spring:
 
 % tot import:
-tot_ch_width = 668; %m
+tot_ch_width = 208; % exterior channels of MMI = 668m, Int of HC channel = 208 m
 tot_import = tot_ch_width*res_sum_lc; % m*kg/m/s = kg/s
 % perc_retained=100*tot_import/D; %5.6% is retained in this forest
 perc_ebb_transp_lc = 100*(tot_ch_width*ebb_sum_lc/tide_sec)/D; %0.05 of total annual
@@ -55,7 +55,7 @@ isl_area = 138250000; %m2
 sed_dep_yr = tot_import*(365*24*60*60)/isl_area; %kg/s * s/yr /m2 = kg/m2/yr
 accum_rate = sed_dep_yr/850*100; %kg/m2/y / 850 kg/m3 * 100 = cm/yr (BD from Cameron 2021)
 % 0.02 cm/yr
-
+% 0.006 cm/yr for lc channels off HC survey
 
 % delta_area = 22945356200;
 % 100*isl_area/delta_area; %MMI is <0.6% of delta 
@@ -103,7 +103,7 @@ res_sum_lc = (fld_sum_lc - ebb_sum_lc)/tide_sec; % kg/s/m
 D = 0.1*1000; %kg/s, % Bogale in Sept, spring:
 
 % tot import:
-tot_ch_width = 668; %m
+tot_ch_width = 208;% exterior channels of MMI = 668m, Int of HC channel = 208 m
 tot_import = tot_ch_width*res_sum_lc; % m*kg/m/s = kg/s
 % perc_retained=100*tot_import/D; %5.6% is retained in this forest
 perc_ebb_transp_lc = 100*(tot_ch_width*ebb_sum_lc/tide_sec)/D; %0.05 of total annual
@@ -114,7 +114,8 @@ perc_fld_transp_hc = 100*(50*fld_sum_hc/tide_sec)/D; %0.06 of total annual
 isl_area = 138250000; %m2
 sed_dep_yr = tot_import*(365*24*60*60)/isl_area; %kg/s * s/yr /m2 = kg/m2/yr
 accum_rate = sed_dep_yr/850*100; %kg/m2/y / 850 kg/m3 * 100 = cm/yr (BD from Cameron 2021)
-% 0.06 cm/yr
+% 0.06 cm/yr for ext LCs
+% 0.02 cm/yr for Int LCs off of HC
 
 %% High FLow - Sept 2019
 clear all,close all,clc
@@ -161,7 +162,7 @@ res_sum_lc = (fld_sum_lc - ebb_sum_lc)/tide_sec; % kg/s/m
 D = 0.7*1000; %kg/s, % Bogale in Sept, spring:
 
 % tot import:
-tot_ch_width = 668; %m
+tot_ch_width = 208;% exterior channels of MMI = 668m, Int of HC channel = 208 m
 tot_import = tot_ch_width*res_sum_lc; % m*kg/m/s = kg/s
 % perc_retained=100*tot_import/D; %5.6% is retained in this forest
 perc_ebb_transp_lc = 100*(tot_ch_width*ebb_sum_lc/tide_sec)/D; %0.05 of total annual
@@ -174,3 +175,4 @@ sed_dep_yr = tot_import*(365*24*60*60)/isl_area; %kg/s * s/yr /m2 = kg/m2/yr
 accum_rate = sed_dep_yr/850*100; %kg/m2/y / 850 kg/m3 * 100 = cm/yr (BD from Cameron 2021)
 
 % 0.12 cm/yr
+% 0 cm/yr for Int LCs off of HC
